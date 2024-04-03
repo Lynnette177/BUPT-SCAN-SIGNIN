@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上传图片</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<button id="returnHome">返回主页</button>
+<script>
+    document.getElementById('returnHome').addEventListener('click', function() {
+        window.location.href = '/'; // 返回主页
+    });
+</script>
+    <h1>上传图片</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*"><br><br>
+        <label for="title">课程名:</label>
+        <input type="text" id="title" name="title"><br><br>
+        <label for="expiry_time">超时时间:</label>
+        <select id="expiry_time" name="expiry_time">
+            <option value="10">10分钟</option>
+            <option value="60">1小时</option>
+            <option value="180">3小时</option>
+        </select><br><br>
+        <button type="submit">上传</button>
+    </form>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 获取错误消息，如果存在的话
+        var errorMessage = "{{ error_message }}";
+
+        // 如果有错误消息，则显示弹窗
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    </script>
+</body>
+</html>

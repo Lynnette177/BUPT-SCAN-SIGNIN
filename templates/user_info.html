@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>签到</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<button id="returnHome">返回主页</button>
+<script>
+    document.getElementById('returnHome').addEventListener('click', function() {
+        window.location.href = '/'; // 返回主页
+    });
+</script>
+    <h1>填写学号和密码</h1>
+    <script>
+        var errorMessage = "{{ error_message }}";
+    // 如果有错误消息，则显示弹窗
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    </script>
+    <form method="post">
+        <label for="username">学号:</label>
+        <input type="text" id="username" name="username"><br><br>
+        <label for="password">密码:</label>
+        <input type="password" id="password" name="password">
+        <input type="checkbox" id="save_password" name="save_password">
+        <label for="save_password">保存Cookie到服务器，让别人帮你签</label><br><br>
+        <input type="submit" name="login" value="登录并签到">
+    </form>
+    <h2>服务器已存Cookie，代签：</h2>
+    <form method="post" id="selectionForm">
+        <h2>选择学号：</h2>
+        {% for txt_file in txt_files %}
+            <input type="checkbox" id="{{ txt_file }}" name="selected_ids" value="{{ txt_file }}">
+            <label for="{{ txt_file }}">{{ txt_file }}</label><br><br>
+        {% endfor %}
+        <input type="submit" name="signin" value="签到已选学号">
+    </form>
+    <div id="result">
+        {% if result %}
+        <h2>签到结果：</h2>
+        {% for rs in result %}
+                <ul>
+                    <li>{{ rs }}</li>
+                </ul>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+
+<script>
+    // 获取两个表单元素
+    const loginForm = document.querySelector('form[name="login"]');
+    const signinForm = document.getElementById('selectionForm');
+
+    // 提交登录表单时的处理
+    loginForm.addEventListener('submit', function(event) {
+        // 直接让表单提交
+        return true;
+    });
+
+    // 提交签到表单时的处理
+    signinForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+        const formData = new FormData(signinForm); // 创建 FormData 对象
+        const selectedIds = []; // 存储选中的学号
+        // 遍历选中的复选框
+        formData.getAll('selected_ids').forEach(function(id) {
+            selectedIds.push(id);
+        });
+        // 将选中的学号作为 JSON 字符串添加到 FormData
+        formData.append('selected_ids_json', JSON.stringify(selectedIds));
+        formData.append('signin', 'true');
+        // 发送请求
+        // 构建请求 URL
+        const currentURL = window.location.href;
+        fetch(currentURL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // 处理响应
+            console.log('Response received:', response);
+        })
+        .catch(error => {
+            // 处理错误
+            console.error('Error occurred:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

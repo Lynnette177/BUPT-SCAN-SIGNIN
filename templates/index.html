@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .image-container {
+            display: block; /* 使用块级布局，让图片和文字在不同行显示 */
+            margin-bottom: 10px; /* 添加底部间距，让每个项目之间有一定的间隔 */
+        }
+        .image-container img {
+            max-width: 200px; /* 图片最大宽度为 200px */
+        }
+    </style>
+</head>
+<body>
+    <h1>共享签到列表</h1>
+    <h3>课程信息会被保存24小时。</h3>
+    <h3>用户名与密码不会被保存。</h3>
+    <h3>如果你选择保存Cookie则会被保存直至下次调用失效时。</h3>
+    <h2>签到功能已经被使用了 {{ usage_count }} 次。</h2>
+    <a href="{{ url_for('upload') }}">上传一个签到二维码</a>
+    <ul>
+        {% for image in images %}
+            {% if image.expired %}
+                <li style="color: grey;">
+                    课程：{{ image.title }} --- 上传时间：{{ image.creation_time }} --- 过期时间：{{ image.expiry_time }} (已过期)
+                    <!-- 显示图片 -->
+                    <a href="{{ url_for('user_info', title=image.title +'--' + image.expiry_time) }}">签不了啦 你可以试试</a>
+                </li>
+            {% else %}
+                <li>
+                    课程：{{ image.title }} --- 上传时间：{{ image.creation_time }} --- 过期时间：{{ image.expiry_time }}
+                    <!-- 图片和文字分开展示 -->
+                    <div class="image-container">
+                        <span>图片：</span>
+                        <img src="{{ url_for('static', filename=image.filename) }}" alt="{{ image.title }}">
+                    </div>
+                    <a href="{{ url_for('user_info', title=image.title +'--' + image.expiry_time) }}">点我签到！</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</body>
+</html>
