@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  auto_sign:
+    image: lynnette177/python_cv:first
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./usage_count.txt:/app/usage_count.txt
+      - ./Accounts:/app/Accounts
+      - ./uploads:/app/uploads
+      - ./templates:/app/templates
+      - ./mainapp.py:/app/mainapp.py
+      - ./tongyirenzheng.py:/app/tongyirenzheng.py
+    ports:
+      - "8555:5000"
+    command: ["python3", "/app/mainapp.py"]
